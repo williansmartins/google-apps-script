@@ -2,44 +2,38 @@ function myFunction(s1, s2) {
   return (456);
 }
 
+function criarPastaNova(){
+  //destino
+  var CLIENTES_ID = "0B5dHopAxPK6wNjE3ZmVlNTEtNzQwNC00YTBjLWEyNjAtYjZkODNmZmQxNjA2";
+  var clientes = DriveApp.getFolderById(CLIENTES_ID);
+  var novaPasta = clientes.createFolder("a-nova-pasta");
+  
+  moverArquivos(novaPasta);
+}
+
+function moverArquivos(novaPasta){
+  var origem = DriveApp.getFolderById("1VY4SxlBWYh1zi6huMRkDahUTucvF59M7");
+  var arquivos = origem.getFiles();
+  var list = [];
+  
+  while (arquivos.hasNext()){
+    var arquivo = arquivos.next();
+    arquivo.makeCopy(arquivo.getName(), novaPasta);
+  }
+}
+
 function start() {
-
-  var sourceFolder = "origem";
-  var targetFolder = "destino";
-
-  var source = DriveApp.getFoldersByName(sourceFolder);
-  var target = DriveApp.createFolder(targetFolder);
-
-  if (source.hasNext()) {
-    copyFolder(source.next(), target);
-  }
+  criarPastaNova()
 }
 
-function copyFolder(source, target) {
 
-  var folders = source.getFolders();
-  var files   = source.getFiles();
-
-  while(files.hasNext()) {
-    var file = files.next();
-    file.makeCopy(file.getName(), target);
-  }
-
-  while(folders.hasNext()) {
-    var subFolder = folders.next();
-    var folderName = subFolder.getName();
-    var targetFolder = target.createFolder(folderName);
-    copyFolder(subFolder, targetFolder);
-  }
-
-}
 
 function onOpen() {
   
   var ui = SpreadsheetApp.getUi();
   // Or DocumentApp or FormApp.
-  ui.createMenu('Custom Menu')
-      .addItem('First item', 'menuItem1')
+  ui.createMenu('Jarvis')
+      .addItem('Duplicar Pasta', 'menuItem1')
       .addSeparator()
       .addSubMenu(ui.createMenu('Sub-menu')
           .addItem('Second item', 'menuItem2'))
@@ -48,6 +42,7 @@ function onOpen() {
 
 function menuItem1() {
   start();
+  //SpreadsheetApp.getUi().alert('Sucesso ao duplicar!');
 }
 
 function menuItem2() {
